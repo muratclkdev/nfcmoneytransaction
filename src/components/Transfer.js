@@ -51,19 +51,53 @@ const Transfer = () => {
     navigate('/confirmation', { state: { sender, recipient, amount } });
   };
 
+  const handleNFCReceive = async () => {
+    if ('NDEFReader' in window) {
+      try {
+        const ndef = new window.NDEFReader();
+        await ndef.scan();
+        console.log("NFC alıcı tarayıcısı başlatıldı.");
+
+        ndef.onreading = event => {
+          const message = event.message;
+          for (const record of message.records) {
+            console.log("NFC okuma:");
+            console.log("  Kayıt türü:  " + record.recordType);
+            console.log("  Medya türü:  " + record.mediaType);
+            console.log("  Kayıt verisi: " + record.data);
+            const data = JSON.parse(record.data);
+            // NFC okutulduğunda işlemi onayla
+            navigate('/confirmation', { state: { sender: data.sender, recipient: sender, amount: data.amount } });
+          }
+        };
+      } catch (error) {
+        console.log("Hata: " + error);
+        alert('NFC Alma İşlemi Başarısız: ' + error);
+      }
+    } else {
+      alert('Tarayıcınız NFC desteklemiyor.');
+    }
+  };
+
   return (
     <div>
       <h2>Transfer Yap</h2>
       {!confirmationNeeded ? (
-        <>
-          <input
-            type="text"
-            placeholder="Göndermek İstediğiniz Tutar"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-          <button onClick={handleTransfer}>Onayla ve Gönder</button>
-        </>
+        recipient ? (
+          <>
+            <input
+              type="text"
+              placeholder="Göndermek İstediğiniz Tutar"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+            <button onClick={handleTransfer}>Onayla ve Gönder</button>
+          </>
+        ) : (
+          <>
+            <button onClick={handleNFCReceive}>NFC ile Para Al</button>
+          </>
+        )
       ) : (
         <>
           <h3>NFC veya QR ile Ödeme</h3>

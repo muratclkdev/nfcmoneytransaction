@@ -27,6 +27,7 @@ const AccountList = () => {
         <p>Bakiye: {accounts[username].balance} TL</p>
         <button onClick={handleTransfer}>NFC veya QR ile Para Gönder</button>
         <button onClick={handleQRScan}>QR Tara</button>
+        <button onClick={() => navigate('/transfer', { state: { sender: username, recipient: null } })}>NFC ile Para Al</button>
       </div>
     </div>
   );
