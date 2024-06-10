@@ -33,10 +33,16 @@ const Transfer = () => {
           // NFC okutulduğunda işlemi onayla
           confirmTransfer();
         };
+
+        await ndef.write(`Gönderici: ${sender}, Alıcı: ${recipient}, Tutar: ${amount} TL`);
+        alert('NFC İşlemi Başarılı');
+        navigate('/confirmation', { state: { sender, recipient, amount } });
       } catch (error) {
         console.log("Hata: " + error);
         alert('NFC İşlemi Başarısız: ' + error);
       }
+    } else {
+      alert('Tarayıcınız NFC desteklemiyor.');
     }
   };
 

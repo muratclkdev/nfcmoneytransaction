@@ -15,6 +15,10 @@ const AccountList = () => {
     navigate('/transfer', { state: { sender: username, recipient: username === 'user1' ? 'user2' : 'user1' } });
   };
 
+  const handleQRScan = () => {
+    navigate('/qr-scan', { state: { username } });
+  };
+
   return (
     <div>
       <h2>Hesap Listesi</h2>
@@ -22,6 +26,7 @@ const AccountList = () => {
         <p>Hesap: {accounts[username].iban}</p>
         <p>Bakiye: {accounts[username].balance} TL</p>
         <button onClick={handleTransfer}>NFC veya QR ile Para Gönder</button>
+        <button onClick={handleQRScan}>QR Tara</button>
       </div>
     </div>
   );
